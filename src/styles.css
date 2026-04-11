@@ -1,0 +1,105 @@
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+.container {
+  height: 100vh;          
+  width: 100vw;
+  display: flex;
+  justify-content: center;  /* horizontal */
+  align-items: center;      /* vertical */
+  background-color: #f9f9f9;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 100px repeat(7, 80px); /* wider cells */
+}
+
+.header {
+  text-align: center;
+  font-weight: bold;
+}
+
+.time-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cell {
+  height: 24px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  transition: 0.2s;
+  background-color: #ffffff;
+}
+
+.cell:hover {
+  background-color: #eee;
+}
+
+.cell.active {
+  background-color: #42b883; /* Vue green */
+}
+
+.password-section {
+  margin-top: 20px;
+}
+
+input {
+  padding: 4px 8px;
+  width: 250px;
+  margin-right: 10px;
+}
+
+button {
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+.block-section {
+  margin-top: 10px;
+}
+
+textarea {
+  width: 300px;
+  padding: 8px;
+  resize: none;
+}
+
+.output-section {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.output-section textarea {
+  width: 400px;
+  font-family: monospace;
+}
+
+.key-box {
+  max-width: 400px;
+  padding: 8px 12px;
+  background: #f4f4f4;
+  border-radius: 6px;
+  font-family: monospace;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
