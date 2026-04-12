@@ -1,4 +1,4 @@
-import type { DecryptedPayload, EncryptedPayload } from '@/types/block'
+import type { DecryptedPayload, EncryptedPayload, ScheduleConfig} from '@/types/block'
 
 export async function getKey(password: string): Promise<CryptoKey> {
   const encoder = new TextEncoder()
@@ -20,7 +20,8 @@ export async function getKey(password: string): Promise<CryptoKey> {
 export async function encryptData(
   key: CryptoKey,
   data: DecryptedPayload,
-  index: number
+  index: number,
+  scheduleConfig: ScheduleConfig
 ): Promise<EncryptedPayload> {
   const iv = crypto.getRandomValues(new Uint8Array(12))
   const encoder = new TextEncoder()
@@ -40,6 +41,7 @@ export async function encryptData(
 
   return {
     index,
+    scheduleConfig,
     iv: ivBase64,
     data: dataBase64
   }

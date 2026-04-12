@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { getKey, decryptData, decodeBlock, stringToCryptoKey } from '@/utils/crypto'
-import { days, times, getIndex } from '@/constants/schedule'
+import { decryptData, decodeBlock, stringToCryptoKey } from '@/utils/crypto'
+import { generateTimes} from '@/utils/time'
 import type { EncryptedPayload, DecryptedPayload } from '@/types/block'
+
+import ScheduleGrid from '@/components/Schedule.vue'
 
 const encryptedBlock = ref('')
 const passwordList = ref('') 
@@ -10,6 +12,8 @@ const result = ref<number[] | null>(null)
 const progress = ref(0)
 const totalBlocks = ref(0)
 const isUnlocking = ref(false)
+const times = ref<number[]>([0])
+const days = ref<number[]>([0,1,2,3,4])
 
 function parsePasswords(input: string, size = 44): string[] {
   const RAW = input.replace(/\s/g, '')
@@ -35,7 +39,9 @@ async function unlock() {
   const passwords = parsePasswords(passwordList.value)
 
   let current: EncryptedPayload = decodeBlock(encryptedBlock.value)
-  totalBlocks.value = current.index + 1;
+  totalBlocks.value = current.index + 1
+  days.value = current.scheduleConfig.days
+  times.value = generateTimes(current.scheduleConfig.startTime, current.scheduleConfig.endTime)
   const collectedSchedules: boolean[][] = []
 
   if (passwords.length < totalBlocks.value){
@@ -82,11 +88,10 @@ async function unlock() {
     return
   }
 
-  // aggregation (OR logic)
-  const final = Array(21).fill(0)
-
+  const totalCell = times.value.length * days.value.length
+  const final = Array(totalCell).fill(0)
   for (const sched of collectedSchedules) {
-    for (let i = 0; i < 21; i++) {
+    for (let i = 0; i < totalCell; i++) {
       if (sched[i]) {
         final[i] += 1
       }
@@ -94,31 +99,6 @@ async function unlock() {
   }
 
   result.value = final
-}
-
-function getCellStyle(value: number) {
-  if (value === 0 || totalBlocks.value === 0) {
-    return {
-      backgroundColor: '#ffffff'
-    }
-  }
-
-  // normalize 0 → 1
-  const intensity = Math.min((value -1) / totalBlocks.value, 1)
-
-  // base Vue green
-  const base = { r: 66, g: 184, b: 131 }
-
-  // interpolate toward darker green
-  const factor = 1 - intensity * 0.5 // max 50% darker
-
-  const r = Math.floor(base.r * factor)
-  const g = Math.floor(base.g * factor)
-  const b = Math.floor(base.b * factor)
-
-  return {
-    backgroundColor: `rgb(${r}, ${g}, ${b})`
-  }
 }
 </script>
 
@@ -157,23 +137,12 @@ function getCellStyle(value: number) {
 
       <div v-if="result">
         <h3>Final Schedule</h3>
-        <div class="grid">
-          <div></div>
-          <div v-for="day in days" :key="day" class="header">
-            {{ day }}
-          </div>
-
-          <template v-for="(time, tIndex) in times" :key="time">
-            <div class="time-label">{{ time }}</div>
-
-            <div
-              v-for="(day, dIndex) in days"
-              :key="day + time"
-              class="cell"
-              :style="getCellStyle(result[getIndex(dIndex, tIndex)] ?? 0)"
-            ></div>
-          </template>
-        </div>
+        <ScheduleGrid
+          :days="days"
+          :times="times"
+          :values="result"
+          :readonly="true"
+        />
       </div>
 
     </div>
