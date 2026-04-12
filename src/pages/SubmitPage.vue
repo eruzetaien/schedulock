@@ -304,7 +304,7 @@ function resizeSchedule(
 }
 
 .key-box {
-  width: 400px;
+  width: 280px;
   padding: 8px 12px;
   background: #f4f4f4;
   border-radius: 6px;
@@ -313,6 +313,12 @@ function resizeSchedule(
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+@media (min-width: 1280px) {
+  .key-box {
+    width: 400px;
+  }
 }
 
 .times-section {

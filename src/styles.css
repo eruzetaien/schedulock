@@ -30,6 +30,7 @@ body {
   align-items: center;
   justify-content: center;
   gap: 16px 0px;
+  padding: 0px 24px;
 }
 
 textarea {
