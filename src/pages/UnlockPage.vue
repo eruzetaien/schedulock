@@ -104,46 +104,51 @@ async function unlock() {
 
 <template>
   <div class="container">
-    <div class="app">
+    <div class="layout">
+      <div class="left">
+        <h1>Unlock Schedule 🔓</h1>
 
-      <h1>Unlock Schedule 🔓</h1>
-
-      <textarea
-        v-model="encryptedBlock"
-        placeholder="Paste encrypted block"
-        rows="5"
-      />
-
-      <textarea
-        v-model="passwordList"
-        placeholder="Enter passwords"
-        rows="3"
-      />
-
-      <button @click="unlock">
-        Unlock & See The Result
-      </button>
-
-      <div v-if="isUnlocking" class="progress">
-        Decrypting block {{ progress }} / {{ totalBlocks }}
-      </div>
-
-      <div v-if="isUnlocking" class="bar">
-        <div
-          class="bar-inner"
-          :style="{ width: (progress / totalBlocks) * 100 + '%' }"
+        <textarea
+          v-model="encryptedBlock"
+          placeholder="Paste encrypted block"
+          rows="5"
         />
+
+        <textarea
+          v-model="passwordList"
+          placeholder="Enter passwords"
+          rows="3"
+        />
+
+        <button @click="unlock">
+          Unlock & See The Result
+        </button>
+
       </div>
 
-      <div v-if="result">
-        <h3>Final Schedule</h3>
-        <ScheduleGrid
-          :days="days"
-          :times="times"
-          :values="result"
-          :readonly="true"
-        />
+      <div class="right">
+        <div v-if="isUnlocking" class="progress">
+          Decrypting block {{ progress }} / {{ totalBlocks }}
+        </div>
+
+        <div v-if="isUnlocking" class="bar">
+          <div
+            class="bar-inner"
+            :style="{ width: (progress / totalBlocks) * 100 + '%' }"
+          />
+        </div>
+
+        <div v-if="result">
+          <h3>Final Schedule</h3>
+          <ScheduleGrid
+            :days="days"
+            :times="times"
+            :values="result"
+            :readonly="true"
+          />
+        </div>
       </div>
+
 
     </div>
   </div>

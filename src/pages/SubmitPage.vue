@@ -177,97 +177,105 @@ function resizeSchedule(
 
 <template>
   <div class="container">
-    <div class="app">
-      <h1>Lock Schedule 🔐</h1>
+    <div class="layout">
+      
+      <div class="left">
+        <h1>Lock Schedule 🔐</h1>
 
-      <div class="times-section">
-        <label>
-          Start Time:
-        </label>
-        <input
-            type="time"
-            v-model="startTime"
-            step="1800"
-            @change="startTime = normalizeTo30Min(startTime)"
-            :disabled="isLocked"
-        />
-
-        <label>
-          End Time:
-        </label>
-        <input
-            type="time"
-            v-model="endTime"
-            step="1800"
-            @change="endTime = normalizeTo30Min(endTime)"
-            :disabled="isLocked"
-        />
-      </div>
-
-      <div class="days-section">
-        <label v-for="(d, i) in allDays" :key="i">
-          {{ d }}
+        <div class="times-section">
+          <label>
+            Start Time:
+          </label>
           <input
-            type="checkbox"
-            :value="i"
-            v-model="days"
-            :disabled="isLocked"
+              type="time"
+              v-model="startTime"
+              step="1800"
+              @change="startTime = normalizeTo30Min(startTime)"
+              :disabled="isLocked"
           />
-        </label>
-      </div>
 
-      <ScheduleGrid
-        v-if="isValidConfig"
-        :days="sortedDays"
-        :times="times"
-        v-model="schedule"
-      />
-
-      <div class="password-section">
-        <input
-          v-model="password"
-          type="password"
-          placeholder="Enter your key to lock the schedule"
-        />
-      </div>
-
-      <div class="block-section">
-        <textarea
-          v-model="prevBlock"
-          placeholder="Paste previous encrypted block (optional)"
-          rows="4"
-        ></textarea>
-      </div>
-
-      <button @click="submitSchedule">
-        Submit Schedule
-      </button>
-
-      <div v-if="outputBlock" class="output-section">
-        <h3>Encrypted Block</h3>
-
-        <textarea
-          :value="outputBlock"
-          readonly
-          rows="8"
-        ></textarea>
-
-        <button @click="copyText(outputBlock)">
-          Copy
-        </button>
-      </div>
-
-      <div v-if="outputKey" class="output-section">
-        <h3>Key</h3>
-
-        <div class="key-box">
-          {{ outputKey }}
+          <label>
+            End Time:
+          </label>
+          <input
+              type="time"
+              v-model="endTime"
+              step="1800"
+              @change="endTime = normalizeTo30Min(endTime)"
+              :disabled="isLocked"
+          />
         </div>
 
-        <button @click="copyText(outputKey)">
-          Copy
+        <div class="days-section">
+          <label v-for="(d, i) in allDays" :key="i">
+            {{ d }}
+            <input
+              type="checkbox"
+              :value="i"
+              v-model="days"
+              :disabled="isLocked"
+            />
+          </label>
+        </div>
+
+        <ScheduleGrid
+          v-if="isValidConfig"
+          :days="sortedDays"
+          :times="times"
+          v-model="schedule"
+        />
+
+        <div class="password-section">
+          <input
+            v-model="password"
+            type="password"
+            placeholder="Enter your key to lock the schedule"
+          />
+        </div>
+
+        <div class="block-section">
+          <textarea
+            v-model="prevBlock"
+            placeholder="Paste previous encrypted block (optional)"
+            rows="4"
+          ></textarea>
+        </div>
+
+        <button @click="submitSchedule">
+          Submit Schedule
         </button>
+
       </div>
+      
+      <!-- Output -->
+      <div class="right">
+        <div v-if="outputBlock" class="output-section">
+          <h3>Encrypted Block</h3>
+
+          <textarea
+            :value="outputBlock"
+            readonly
+            rows="8"
+          ></textarea>
+
+          <button @click="copyText(outputBlock)">
+            Copy
+          </button>
+        </div>
+
+        <div v-if="outputKey" class="output-section">
+          <h3>Key</h3>
+
+          <div class="key-box">
+            {{ outputKey }}
+          </div>
+
+          <button @click="copyText(outputKey)">
+            Copy
+          </button>
+        </div>        
+      </div>
+
 
     </div>
   </div>
@@ -302,7 +310,7 @@ textarea {
 }
 
 .key-box {
-  max-width: 400px;
+  width: 400px;
   padding: 8px 12px;
   background: #f4f4f4;
   border-radius: 6px;

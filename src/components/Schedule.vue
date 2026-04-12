@@ -68,7 +68,7 @@ function getHeatmapStyle(value: number) {
   <div
     class="grid"
     :style="{
-        gridTemplateColumns: `72px repeat(${props.days.length}, 80px)`
+        gridTemplateColumns: `60px repeat(${props.days.length}, 80px)`
     }"
   >
     <div></div>

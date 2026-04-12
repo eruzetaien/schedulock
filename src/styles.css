@@ -9,18 +9,48 @@ body {
 }
 
 .container {
-  width: 100vw;
+  min-width: 100dvw;
   display: flex;
-  justify-content: center;  /* horizontal */
-  align-items: center;      /* vertical */
-  background-color: #f9f9f9;
+  justify-content: center;  
+  align-items: center;
 }
 
-.app {
+.layout {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 48px 0px
+}
+
+.left, .right{
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
+  justify-content: center;
+  gap: 16px 0px
+}
+
+/* desktop */
+@media (min-width: 1280px) {
+  body {
+    overflow-x: hidden;
+  }
+  
+  .layout {
+    flex-direction: row;
+    align-items: stretch;
+    padding: 24px 0px;
+  }
+
+  .left {
+    flex: 1;
+  }
+
+  .right {
+    flex: 1;
+  }
 }
 
 input {
