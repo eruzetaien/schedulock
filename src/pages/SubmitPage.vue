@@ -303,10 +303,6 @@ function resizeSchedule(
   gap: 8px;
 }
 
-.output-section textarea {
-  font-family: monospace;
-}
-
 .key-box {
   width: 400px;
   padding: 8px 12px;

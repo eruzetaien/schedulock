@@ -16,7 +16,6 @@ body {
 }
 
 .layout {
-  min-width: 100dvw;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -34,13 +33,13 @@ body {
 }
 
 textarea {
-  width: 100%;
-  max-width: 60dvw;
+  width: 280px;
   padding: 8px;
   resize: none;
   -webkit-user-select: text;
   user-select: text;
   pointer-events: auto;
+  font-family: monospace;
 }
 
 /* desktop */
@@ -64,15 +63,14 @@ textarea {
   }
 
   textarea {
-    max-width: 400px;
+    width: 400px;
   }
 }
 
 
 input {
   padding: 4px 8px;
-  width: 250px;
-  margin-right: 10px;
+  width: 248px;
 }
 
 button {
