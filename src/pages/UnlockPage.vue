@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { decryptData, decodeBlock, stringToCryptoKey } from '@/utils/crypto'
 import { generateTimes} from '@/utils/time'
 import type { EncryptedPayload, DecryptedPayload } from '@/types/block'
 
 import ScheduleGrid from '@/components/Schedule.vue'
+import NoOutput from '@/components/NoOutput.vue'
 
 const encryptedBlock = ref('')
 const passwordList = ref('') 
@@ -100,6 +101,10 @@ async function unlock() {
 
   result.value = final
 }
+
+const hasOutput = computed(() =>
+  !!result.value || !!progress.value
+)
 </script>
 
 <template>
@@ -127,6 +132,8 @@ async function unlock() {
       </div>
 
       <div class="right">
+         <NoOutput :is-visible ='!hasOutput'/>
+
         <div v-if="isUnlocking" class="progress">
           Decrypting block {{ progress }} / {{ totalBlocks }}
         </div>

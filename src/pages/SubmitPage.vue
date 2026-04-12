@@ -6,6 +6,7 @@ import { allDays} from '@/constants/schedule'
 import type { EncryptedPayload, DecryptedPayload, ScheduleConfig } from '@/types/block'
 
 import ScheduleGrid from '@/components/Schedule.vue'
+import NoOutput from '@/components/NoOutput.vue'
 
 // Input
 const startTime = ref("20:00")
@@ -109,7 +110,9 @@ const isValidConfig = computed(() =>
   days.value.length > 0 && times.value.length > 0
 )
 const isLocked = computed(() => !!lockedConfig.value)
-
+const hasOutput = computed(() =>
+  !!outputBlock.value || !!outputKey.value
+)
 
 watch(
   [sortedDays, times],
@@ -249,6 +252,8 @@ function resizeSchedule(
       
       <!-- Output -->
       <div class="right">
+         <NoOutput :is-visible ='!hasOutput'/>
+
         <div v-if="outputBlock" class="output-section">
           <h3>Encrypted Block</h3>
 
@@ -376,7 +381,7 @@ textarea {
 }
 
 .days-section input {
-  accent-color: #90ecc3;
+  accent-color: #d8f1e6;
 }
 
 .times-section input:disabled,
