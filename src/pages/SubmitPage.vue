@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watchEffect } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { getKey, encryptData, cryptoKeyToString, encodeBlock, decodeBlock } from '@/utils/crypto'
 import { generateTimes, parseTime, formatTime, normalizeTo30Min} from '@/utils/time'
 import { allDays} from '@/constants/schedule'
@@ -8,8 +8,8 @@ import type { EncryptedPayload, DecryptedPayload, ScheduleConfig } from '@/types
 import ScheduleGrid from '@/components/Schedule.vue'
 
 // Input
-const startTime = ref("20:00")      // 00:00
-const endTime = ref("21:00")   // 23:30
+const startTime = ref("20:00")
+const endTime = ref("21:00")
 
 const times = computed(() => {
   const start : number = parseTime(startTime.value)
@@ -19,7 +19,7 @@ const times = computed(() => {
 
   return generateTimes(start, end)
 })
-const days = ref<number[]>([4,5,6]) // Fri, Sat, Sun 
+const days = ref<number[]>([0,1,2,3,4,5,6]) // all days 
 const password = ref('')
 const prevBlock = ref('')
 const lockedConfig = ref<ScheduleConfig | null>(null)
@@ -28,31 +28,35 @@ const sortedDays = computed(() =>
 )
 
 const schedule = ref<boolean[]>([])
-watchEffect(() => {
-  if (!prevBlock.value) {
-    lockedConfig.value = null
-    return
-  }
-
-  try {
-    const prev: EncryptedPayload = decodeBlock(prevBlock.value)
-
-    if (!prev.scheduleConfig) {
-      alert('Invalid block: missing schedule config')
+watch(
+  prevBlock,
+  (newVal) => {
+    if (!newVal) {
+      lockedConfig.value = null
       return
     }
 
-    lockedConfig.value = prev.scheduleConfig
+    try {
+      const prev: EncryptedPayload = decodeBlock(newVal)
 
-    // override local state
-    days.value = [...prev.scheduleConfig.days]
-    startTime.value = formatTime(prev.scheduleConfig.startTime)
-    endTime.value = formatTime(prev.scheduleConfig.endTime)
+      if (!prev.scheduleConfig) {
+        alert('Invalid block: missing schedule config')
+        lockedConfig.value = null
+        return
+      }
 
-  } catch (e) {
-    lockedConfig.value = null
-  }
-})
+      lockedConfig.value = prev.scheduleConfig
+
+      days.value = [...prev.scheduleConfig.days]
+      startTime.value = formatTime(prev.scheduleConfig.startTime)
+      endTime.value = formatTime(prev.scheduleConfig.endTime)
+
+    } catch (e) {
+      lockedConfig.value = null
+    }
+  },
+  { immediate: true }
+)
 
 // Output
 const outputBlock = ref('')
@@ -105,6 +109,69 @@ const isValidConfig = computed(() =>
   days.value.length > 0 && times.value.length > 0
 )
 const isLocked = computed(() => !!lockedConfig.value)
+
+
+watch(
+  [sortedDays, times],
+  ([newDays, newTimes], [oldDaysVal, oldTimesVal]) => {
+    if (isLocked.value) return
+
+    if (
+      !oldDaysVal || oldDaysVal.length === 0 ||
+      !oldTimesVal|| oldTimesVal.length === 0
+    ) {
+      // initial case
+      const size = newDays.length * newTimes.length
+      schedule.value = Array(size).fill(false)
+    } else {
+      schedule.value = resizeSchedule(
+        schedule.value,
+        oldDaysVal ?? [],
+        oldTimesVal ?? [],
+        newDays,
+        newTimes
+      )
+    }
+  },
+  { immediate: true }
+)
+function resizeSchedule(
+  oldSchedule: boolean[],
+  oldDays: number[],
+  oldTimes: number[],
+  newDays: number[],
+  newTimes: number[]
+): boolean[] {
+  const newSize = newDays.length * newTimes.length
+  const newSchedule = Array(newSize).fill(false)
+
+  const oldWidth = oldTimes.length
+  const newWidth = newTimes.length
+
+  // create lookup maps
+  const dayIndexMap = new Map<number, number>()
+  const timeIndexMap = new Map<number, number>()
+
+  newDays.forEach((d, i) => dayIndexMap.set(d, i))
+  newTimes.forEach((t, i) => timeIndexMap.set(t, i))
+
+  oldDays.forEach((day, oldDayIndex) => {
+    const newDayIndex = dayIndexMap.get(day)
+    if (newDayIndex === undefined) return
+
+    oldTimes.forEach((time, oldTimeIndex) => {
+      const newTimeIndex = timeIndexMap.get(time)
+      if (newTimeIndex === undefined) return
+
+      const oldIndex = oldDayIndex * oldWidth + oldTimeIndex
+      const newIndex = newDayIndex * newWidth + newTimeIndex
+
+      newSchedule[newIndex] = oldSchedule[oldIndex] ?? false
+    })
+  })
+
+  return newSchedule
+}
 
 </script>
 
