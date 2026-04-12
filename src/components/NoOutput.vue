@@ -13,7 +13,6 @@ const props = defineProps<{
 .thinking-img{
   display: none;
   user-select: none;
-  pointer-events: none;
 }
 
 @keyframes float {

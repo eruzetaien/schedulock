@@ -228,21 +228,17 @@ function resizeSchedule(
           v-model="schedule"
         />
 
-        <div class="password-section">
-          <input
-            v-model="password"
-            type="password"
-            placeholder="Enter your key to lock the schedule"
-          />
-        </div>
+        <input
+          v-model="password"
+          type="password"
+          placeholder="Enter your key to lock the schedule"
+        />
 
-        <div class="block-section">
-          <textarea
-            v-model="prevBlock"
-            placeholder="Paste previous encrypted block (optional)"
-            rows="4"
-          ></textarea>
-        </div>
+        <textarea
+          v-model="prevBlock"
+          placeholder="Paste previous encrypted block (optional)"
+          rows="4"
+        ></textarea>
 
         <button @click="submitSchedule">
           Submit Schedule
@@ -295,13 +291,10 @@ function resizeSchedule(
 
 .block-section {
   margin-top: 10px;
+  width: 100%;
+  background-color: #42b883;
 }
 
-textarea {
-  width: 400px;
-  padding: 8px;
-  resize: none;
-}
 
 .output-section {
   margin-top: 20px;

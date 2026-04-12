@@ -101,6 +101,7 @@ function getHeatmapStyle(value: number) {
   justify-content: start;  
   align-content: start;
   width: 680px;
+  margin-bottom: 16px;
 }
 
 .header {

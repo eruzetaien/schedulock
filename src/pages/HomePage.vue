@@ -31,13 +31,6 @@ function go(path: string) {
 </template>
 
 <style scoped>
-.container {
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: #f9f9f9;
-}
 
 .home {
   text-align: center;
