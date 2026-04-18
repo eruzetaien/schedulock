@@ -89,7 +89,11 @@ function getHeatmapStyle(value: number) {
         }"
         :style="values ? getHeatmapStyle(values[getIndex(dIndex, tIndex, displayTimes.length)] ?? 0) : {}"
         @click="toggle(dIndex, tIndex)"
-      />
+      >
+        <span v-if="values && (values[getIndex(dIndex, tIndex, displayTimes.length)] ?? 0 )> 0">
+          {{ maxValue > 1 ? values[getIndex(dIndex, tIndex, displayTimes.length)] : null }}
+        </span>
+      </div>
     </template>
   </div>
 </template>
@@ -121,6 +125,13 @@ function getHeatmapStyle(value: number) {
   cursor: pointer;
   transition: 0.2s;
   background-color: #ffffff;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 500;
+  color: #ffffff;
 }
 
 .cell:hover {
